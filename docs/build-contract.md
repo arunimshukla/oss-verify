@@ -243,7 +243,7 @@ The fuzz target that you link with `$LIB_FUZZING_ENGINE` does not change. The al
       malloc calloc realloc reallocarray aligned_alloc posix_memalign memalign strdup strndup
       operator new, operator new[] (C++), with their nothrow and aligned forms
 
-Compile the sources of the fuzz target before the link. Then name the object files and static archives directly, as in the example above. Allocation-failure and counting links refuse source files, response files, linker scripts, `-l` library selectors, and linker forwarding (`-Wl,...` or `-Xlinker`): those forms can hide inputs whose allocation calls would not be rewritten. A normal `$LIB_FUZZING_ENGINE` link keeps its existing behaviour.
+Compile the sources of the fuzz target before the link. Then name the object files and static archives directly, as in the example above. Allocation-failure and counting links refuse source files, response files, linker scripts, `-l` library selectors, and linker forwarding (`-Wl,...`, `-Xlinker` or `--for-linker`), and clang configuration files (`--config`): those forms can hide inputs whose allocation calls would not be rewritten. A normal `$LIB_FUZZING_ENGINE` link keeps its existing behaviour.
 
 While `LLVMFuzzerTestOneInput` runs, the driver counts these calls from 0, over all calls of the fuzz target in a run. Call n fails if bit n of the allocation mask is set:
 

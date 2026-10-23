@@ -101,6 +101,10 @@ def test_explicit_archive_control_reaches_allocation_failure(native_link):
     ["-Wl,-L.,-lfixture"],
     ["-Xlinker", "-L.", "-Xlinker", "-lfixture"],
     ["-Wl,libfixture.a"],
+    ["-L.", "--for-linker", "-lfixture"],
+    ["-L.", "--for-linker=-lfixture"],
+    ["--config", "hidden.cfg"],
+    ["--config=hidden.cfg"],
     ["input.ld"],
 ])
 @pytest.mark.parametrize("engine", ["failure-engine", "counting-engine"])

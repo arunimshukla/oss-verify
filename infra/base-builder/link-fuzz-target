@@ -66,8 +66,9 @@ if [ "$driver" = "$OV_AF_DRIVER" ] || [ "$driver" = "$OV_AFC_DRIVER" ]; then
   for i in "${!args[@]}"; do
     a=${args[$i]}
     case "$a" in
-      -l*|-Wl,*|-Xlinker)
-        echo "link-fuzz-target: $a: name an allocation-failure fuzz target's object files and archives directly, without -l or linker forwarding" >&2
+      # --for-linker is clang's other spelling of -Xlinker, and a --config file can hold -L, -l and -Wl options.
+      -l*|-Wl,*|-Xlinker|--for-linker|--for-linker=*|--config|--config=*)
+        echo "link-fuzz-target: $a: name an allocation-failure fuzz target's object files and archives directly, without -l, linker forwarding or a configuration file" >&2
         exit 1 ;;
       -*) continue ;;
       @*)
