@@ -5,6 +5,7 @@ import contextlib
 import importlib.machinery
 import importlib.util
 import io
+import os
 import pathlib
 import subprocess
 import sys
@@ -33,6 +34,16 @@ class GitRepository(unittest.TestCase):
         self.scratch = tempfile.TemporaryDirectory()
         self.addCleanup(self.scratch.cleanup)
         self.root = pathlib.Path(self.scratch.name)
+        # git with no configuration from this machine: its hooks, signing and URL rewrites stay out of the fixture,
+        # for the fixture's own commits and for the real git ls-remote that resolve() runs.
+        home = self.root / "home"
+        home.mkdir()
+        environment = mock.patch.dict(os.environ, {
+            "PATH": os.environ["PATH"], "HOME": str(home), "GIT_CONFIG_GLOBAL": str(home / "gitconfig"),
+            "GIT_CONFIG_NOSYSTEM": "1",
+        }, clear=True)
+        environment.start()
+        self.addCleanup(environment.stop)
         self.remote = self.root / "remote"
         subprocess.run(["git", "init", "-q", "-b", "main", str(self.remote)], check=True, capture_output=True)
         self.git("commit", "-q", "--allow-empty", "-m", "first")
